@@ -144,11 +144,15 @@ angular.module('ui.bootstrap.modal', ['ui.bootstrap.stackedMap', 'ui.bootstrap.p
         element.addClass(attrs.windowTopClass || '');
         scope.size = attrs.size;
 
+        // inserted to fix issue #6061
+        var backdropClosing = false;
         scope.close = function(evt) {
           var modal = $modalStack.getTop();
           if (modal && modal.value.backdrop &&
             modal.value.backdrop !== 'static' &&
-            evt.target === evt.currentTarget) {
+            evt.target === evt.currentTarget &&
+            !backdropClosing) {
+            backdropClosing = true;
             evt.preventDefault();
             evt.stopPropagation();
             $modalStack.dismiss(modal.key, 'backdrop click');
